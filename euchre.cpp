@@ -2,7 +2,7 @@
 using namespace std;
 
 int main(int argc, char *argv[]) {
-
+    //WIP
     if (argc != 12 || (atoi(argv[3]) > 100 || atoi(argv[3]) < 1) 
     || ((argv[3] != "noshuffle") || (argv[3] != "shuffle")) || 
     ((argv[5] != "Simple" || argv[7] != "Simple" || argv[9] != "Simple" 
