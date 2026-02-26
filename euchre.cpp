@@ -120,6 +120,7 @@ class Game {
                     cout << *players[player_ind] << " passes" << endl;
                 }
             }
+            return order_up_suit;
         }
 
         void play_tricks(int dealer, Suit trump, int trumpOrderer,
@@ -162,9 +163,16 @@ class Game {
     void score_hand(int trumpOrderer, int tricks02, int tricks13) {
     
         int trump_team = trumpOrderer % 2; // 0 = team 02, 1 = team 13
-        int trump_tricks   = (trump_team == 0) ? tricks02 : tricks13;
-        int defender_tricks = (trump_team == 0) ? tricks13 : tricks02;
-    
+        int trump_tricks;
+
+        if (trump_team == 0) {
+            trump_tricks = tricks02;
+        } 
+        
+        else {
+            trump_tricks = tricks13;
+        }
+
         if (trump_tricks >= 3) {
             if (trump_team == 0) {
                 cout << *players[0] << " and " << *players[2] << " win the hand" << endl;
@@ -212,11 +220,17 @@ class Game {
 
 int main(int argc, char *argv[]) {
 
+    string n = "noshuffle";
+    string s = "shuffle";
+    string h = "Human";
+    string simp = "Simple";
+
     if (argc != 12 || (atoi(argv[3]) > 100 || atoi(argv[3]) < 1) 
-    || ((argv[2] != "noshuffle") || (argv[2] != "shuffle")) || 
-    ((argv[5] != "Simple" || argv[7] != "Simple" || argv[9] != "Simple" 
-    || argv[11] != "Simple" || argv[5] != "Human" || argv[7] != "Human" 
-    || argv[9] != "Human" || argv[11] != "Human"))) {
+    || ((n.compare(argv[2]) != 0) || (s.compare(argv[2]) != 0)) || 
+    ((simp.compare(argv[5]) != 0 || simp.compare(argv[7]) != 0 || 
+    simp.compare(argv[9]) != 0 || simp.compare(argv[11]) != 0 || 
+    h.compare(argv[5]) != 0 || h.compare(argv[7]) != 0 || 
+    h.compare(argv[9]) != 0 || h.compare(argv[11]) != 0))) {
     
     cout << "Usage: euchre.exe PACK_FILENAME [shuffle|noshuffle] "
      << "POINTS_TO_WIN NAME1 TYPE1 NAME2 TYPE2 NAME3 TYPE3 "
@@ -230,7 +244,7 @@ int main(int argc, char *argv[]) {
      cout << "Error opening " << pack_filename << endl;
     }
 
-    const bool doShuffle = (argv[2] == "shuffle");
+    const bool doShuffle = (s.compare(argv[2]) == 0);
     const int points_to_win = atoi(argv[3]);
     Pack pack(file);
     vector<Player*> players;
