@@ -21,7 +21,7 @@ class Game {
 
             while (team02_score < points_to_win && team13_score < points_to_win) {
                 cout << "Hand " << handNum << endl;
-                cout << players[dealer] << " deals" << endl;
+                cout << *players[dealer] << " deals" << endl;
 
                 shuffle();
                 Card upcard = deal(dealer, handNum);
@@ -38,7 +38,7 @@ class Game {
                 ++handNum;
             }
 
-            if (team02_score <= points_to_win) {
+            if (team02_score >= points_to_win) {
                 cout << *players[0] << " and " << *players[2] << " win the hand" << endl;
             } else {
                 cout << *players[1] << " and " << *players[3] << " win the hand" << endl;
@@ -226,16 +226,21 @@ int main(int argc, char *argv[]) {
     string simp = "Simple";
 
     if (argc != 12 || (atoi(argv[3]) > 100 || atoi(argv[3]) < 1) 
-    || ((n.compare(argv[2]) != 0) || (s.compare(argv[2]) != 0)) || 
-    ((simp.compare(argv[5]) != 0 || simp.compare(argv[7]) != 0 || 
-    simp.compare(argv[9]) != 0 || simp.compare(argv[11]) != 0 || 
-    h.compare(argv[5]) != 0 || h.compare(argv[7]) != 0 || 
-    h.compare(argv[9]) != 0 || h.compare(argv[11]) != 0))) {
+    || (n.compare(argv[2]) != 0 && s.compare(argv[2]) != 0)
+    || (simp.compare(argv[5]) != 0 && h.compare(argv[5]) != 0)
+    || (simp.compare(argv[7]) != 0 && h.compare(argv[7]) != 0)
+    || (simp.compare(argv[9]) != 0 && h.compare(argv[9]) != 0)
+    || (simp.compare(argv[11]) != 0 && h.compare(argv[11]) != 0))  {
     
+//    cout << "Usage: " << "euchre.exe " << argv[1] << " " << argv[2] 
+//    << " " << argv[3] << " " << argv[4] << " " << argv[5] << " " << 
+//    argv[6] << " " << argv[7] << " " << argv[8] << " " << argv[9] 
+//    << " " << argv[10] << " " << argv[11] << " " << argv[12] << " " <<
+//    endl;
     cout << "Usage: euchre.exe PACK_FILENAME [shuffle|noshuffle] "
      << "POINTS_TO_WIN NAME1 TYPE1 NAME2 TYPE2 NAME3 TYPE3 "
      << "NAME4 TYPE4" << endl;
-    
+     
      return 67;
     }
     const string pack_filename = argv[1];
