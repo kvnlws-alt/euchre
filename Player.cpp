@@ -2,8 +2,8 @@
 #include <array>
 #include <string>
 #include <cassert>
+#include <algorithm>
 #include "Player.hpp"
-#include <string>
 #include <vector>
 
 using namespace std;
@@ -107,8 +107,7 @@ public:
                     selected_index = i;
                     first_found = true;
                 }
-                else if (Card_less(hand[selected_index], hand[i],
-                                   hand[i], trump)) {
+                else if (hand[selected_index].get_rank() < hand[i].get_rank()) {
                     selected_index = i;
                 }
             }
@@ -116,8 +115,7 @@ public:
     }
     else {
         for (int i = 1; i < hand.size(); ++i) {
-            if (Card_less(hand[selected_index], hand[i],
-                          hand[i], trump)) {
+            if (Card_less(hand[selected_index], hand[i], trump)) {
                 selected_index = i;
             }
         }
@@ -192,71 +190,69 @@ public:
     }
 
     bool make_trump(const Card &upcard, bool is_dealer,
-                       int round, Suit &order_up_suit) const override {
-    print_hand();
-    cout << "Human player " << name
-         << ", please enter a suit, or \"pass\":"
-         << endl;
-    string input;
-    cin >> input;
+                    int round, Suit &order_up_suit) const override {
+        vector<Card> sorted = hand;
+        sort(sorted.begin(), sorted.end());
+        for (int i = 0; i < sorted.size(); ++i) {
+            cout << "Human player " << name << "'s hand: "
+                 << "[" << i << "] " << sorted[i] << endl;
+        }
+        cout << "Human player " << name
+             << ", please enter a suit, or \"pass\":" << endl;
+        string input;
+        cin >> input;
 
-    if (input != "pass") {
-        order_up_suit = string_to_suit(input);
-        return true;
-    }
+        if (input != "pass") {
+            order_up_suit = string_to_suit(input);
+            return true;
+        }
 
-    return false;
+        return false;
     }
 
     void add_and_discard(const Card &upcard) override {
-         hand.push_back(upcard);
-
-    print_hand();
-
-    cout << "Human player " << name
-         << ", please select a card to discard:"
-         << endl;
-    int index;
-    cin >> index;
-
-    hand.erase(hand.begin() + index);
+        hand.push_back(upcard);
+        sort(hand.begin(), hand.end());
+        print_hand();
+        cout << "Human player " << name
+             << ", please select a card to discard:" << endl;
+        int index;
+        cin >> index;
+        hand.erase(hand.begin() + index);
     }
 
-    Card lead_card(Suit trump) override {
-    print_hand();
-    cout << "Human player " << name
-         << ", please select a card to lead:"
-         << endl;
-    int index;
-    cin >> index;
-
-    Card chosen = hand[index];
-    hand.erase(hand.begin() + index);
-    return chosen;
+Card lead_card(Suit trump) override {
+        sort(hand.begin(), hand.end());
+        print_hand();
+        cout << "Human player " << name
+             << ", please select a card:" << endl;
+        int index;
+        cin >> index;
+        Card chosen = hand[index];
+        hand.erase(hand.begin() + index);
+        return chosen;
     }
 
     Card play_card(const Card &led_card, Suit trump) override {
-    print_hand();
-
-    cout << "Human player " << name
-         << ", please select a card to play:"
-         << endl;
-
-    int index;
-    cin >> index;
-
-    Card chosen = hand[index];
-    hand.erase(hand.begin() + index);
-    return chosen;
+        sort(hand.begin(), hand.end());
+        print_hand();
+        cout << "Human player " << name
+             << ", please select a card:" << endl;
+        int index;
+        cin >> index;
+        Card chosen = hand[index];
+        hand.erase(hand.begin() + index);
+        return chosen;
     }
 
 private:
     string name;
     vector<Card> hand;
-    
+
     void print_hand() const {
         for (int i = 0; i < hand.size(); ++i) {
-            cout << "[" << i << "] " << hand[i] << endl;
+            cout << "Human player " << name << "'s hand: "
+                 << "[" << i << "] " << hand[i] << endl;
         }
     }
 };

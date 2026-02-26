@@ -39,9 +39,9 @@ class Game {
             }
 
             if (team02_score >= points_to_win) {
-                cout << *players[0] << " and " << *players[2] << " win the hand" << endl;
+                cout << *players[0] << " and " << *players[2] << " win!" << endl;
             } else {
-                cout << *players[1] << " and " << *players[3] << " win the hand" << endl;
+                cout << *players[1] << " and " << *players[3] << " win!" << endl;
             }
         }
     
@@ -61,10 +61,12 @@ class Game {
                     pack.reset();
                 }
         }
+
         Card deal(int dealer, int handNum) {
 
-            for (int i = dealer; i < 4 + dealer; ++i) {
-                if (i%2 == 0) {
+            for (int i = dealer + 1; i < 5 + dealer; ++i) {
+                int pos = (i - dealer - 1) % 4;
+                if (pos%2 == 0) {
                     players[i%4]->add_card(pack.deal_one());
                     players[i%4]->add_card(pack.deal_one());
                     players[i%4]->add_card(pack.deal_one());
@@ -74,8 +76,9 @@ class Game {
                 }
             }
             
-            for (int i = dealer; i < 4 + dealer; ++i) {
-                if (i%2 == 0) {
+            for (int i = dealer + 1; i < 5 + dealer; ++i) {
+                int pos = (i - dealer - 1) % 4;
+                if (pos%2 == 0) {
                     players[i%4]->add_card(pack.deal_one());
                     players[i%4]->add_card(pack.deal_one());
                 } else {
@@ -240,7 +243,7 @@ int main(int argc, char *argv[]) {
     cout << "Usage: euchre.exe PACK_FILENAME [shuffle|noshuffle] "
      << "POINTS_TO_WIN NAME1 TYPE1 NAME2 TYPE2 NAME3 TYPE3 "
      << "NAME4 TYPE4" << endl;
-     
+
      return 67;
     }
     const string pack_filename = argv[1];
@@ -253,13 +256,15 @@ int main(int argc, char *argv[]) {
     const int points_to_win = atoi(argv[3]);
     Pack pack(file);
     vector<Player*> players;
-    for (int i = 4; i < 10; i += 2) {
+    for (int i = 4; i <= 10; i += 2) {
         players.push_back(Player_factory(argv[i], argv[i+1]));
     }
 
     for (int i = 0; i < argc; ++i) {
-        cout << argv[i] << endl;
+        cout << argv[i] << " ";
     }
+
+    cout << endl;
 
     Game game(players, pack, doShuffle, points_to_win);
     game.play();
